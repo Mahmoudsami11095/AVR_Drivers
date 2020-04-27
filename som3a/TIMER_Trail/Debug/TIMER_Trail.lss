@@ -1,0 +1,760 @@
+
+TIMER_Trail.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000004cc  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .bss          00000002  00800060  00800060  00000540  2**0
+                  ALLOC
+  2 .stab         00000990  00000000  00000000  00000540  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  3 .stabstr      00000b77  00000000  00000000  00000ed0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+   8:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+   c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  10:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  14:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  18:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  1c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  20:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  24:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  28:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  2c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  30:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  34:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  38:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  3c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  40:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  44:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  48:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  4c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  50:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d4 e0       	ldi	r29, 0x04	; 4
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+
+00000060 <__do_clear_bss>:
+  60:	10 e0       	ldi	r17, 0x00	; 0
+  62:	a0 e6       	ldi	r26, 0x60	; 96
+  64:	b0 e0       	ldi	r27, 0x00	; 0
+  66:	01 c0       	rjmp	.+2      	; 0x6a <.do_clear_bss_start>
+
+00000068 <.do_clear_bss_loop>:
+  68:	1d 92       	st	X+, r1
+
+0000006a <.do_clear_bss_start>:
+  6a:	a2 36       	cpi	r26, 0x62	; 98
+  6c:	b1 07       	cpc	r27, r17
+  6e:	e1 f7       	brne	.-8      	; 0x68 <.do_clear_bss_loop>
+  70:	0e 94 e0 01 	call	0x3c0	; 0x3c0 <main>
+  74:	0c 94 64 02 	jmp	0x4c8	; 0x4c8 <_exit>
+
+00000078 <__bad_interrupt>:
+  78:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000007c <TIMER0_init>:
+#include "TIMER.h"
+
+ Gpt_ConfigChannel *g_Gpt_Configuration;
+
+void TIMER0_init (void)
+{
+  7c:	df 93       	push	r29
+  7e:	cf 93       	push	r28
+  80:	cd b7       	in	r28, 0x3d	; 61
+  82:	de b7       	in	r29, 0x3e	; 62
+	//Waveform Generation Mode (normal or compare)
+	TCCR0 &= 0xBF;
+  84:	a3 e5       	ldi	r26, 0x53	; 83
+  86:	b0 e0       	ldi	r27, 0x00	; 0
+  88:	e3 e5       	ldi	r30, 0x53	; 83
+  8a:	f0 e0       	ldi	r31, 0x00	; 0
+  8c:	80 81       	ld	r24, Z
+  8e:	8f 7b       	andi	r24, 0xBF	; 191
+  90:	8c 93       	st	X, r24
+	TCCR0 |= ((0x01 & g_Gpt_Configuration->WGMode)<<WGM00) ;
+  92:	a3 e5       	ldi	r26, 0x53	; 83
+  94:	b0 e0       	ldi	r27, 0x00	; 0
+  96:	e3 e5       	ldi	r30, 0x53	; 83
+  98:	f0 e0       	ldi	r31, 0x00	; 0
+  9a:	80 81       	ld	r24, Z
+  9c:	28 2f       	mov	r18, r24
+  9e:	e0 91 60 00 	lds	r30, 0x0060
+  a2:	f0 91 61 00 	lds	r31, 0x0061
+  a6:	80 81       	ld	r24, Z
+  a8:	88 2f       	mov	r24, r24
+  aa:	90 e0       	ldi	r25, 0x00	; 0
+  ac:	81 70       	andi	r24, 0x01	; 1
+  ae:	90 70       	andi	r25, 0x00	; 0
+  b0:	00 24       	eor	r0, r0
+  b2:	96 95       	lsr	r25
+  b4:	87 95       	ror	r24
+  b6:	07 94       	ror	r0
+  b8:	96 95       	lsr	r25
+  ba:	87 95       	ror	r24
+  bc:	07 94       	ror	r0
+  be:	98 2f       	mov	r25, r24
+  c0:	80 2d       	mov	r24, r0
+  c2:	82 2b       	or	r24, r18
+  c4:	8c 93       	st	X, r24
+
+	TCCR0 &= 0xF7;
+  c6:	a3 e5       	ldi	r26, 0x53	; 83
+  c8:	b0 e0       	ldi	r27, 0x00	; 0
+  ca:	e3 e5       	ldi	r30, 0x53	; 83
+  cc:	f0 e0       	ldi	r31, 0x00	; 0
+  ce:	80 81       	ld	r24, Z
+  d0:	87 7f       	andi	r24, 0xF7	; 247
+  d2:	8c 93       	st	X, r24
+	TCCR0 |= ((0x02 & g_Gpt_Configuration->WGMode)<<WGM01) ;
+  d4:	a3 e5       	ldi	r26, 0x53	; 83
+  d6:	b0 e0       	ldi	r27, 0x00	; 0
+  d8:	e3 e5       	ldi	r30, 0x53	; 83
+  da:	f0 e0       	ldi	r31, 0x00	; 0
+  dc:	80 81       	ld	r24, Z
+  de:	28 2f       	mov	r18, r24
+  e0:	e0 91 60 00 	lds	r30, 0x0060
+  e4:	f0 91 61 00 	lds	r31, 0x0061
+  e8:	80 81       	ld	r24, Z
+  ea:	88 2f       	mov	r24, r24
+  ec:	90 e0       	ldi	r25, 0x00	; 0
+  ee:	82 70       	andi	r24, 0x02	; 2
+  f0:	90 70       	andi	r25, 0x00	; 0
+  f2:	88 0f       	add	r24, r24
+  f4:	99 1f       	adc	r25, r25
+  f6:	88 0f       	add	r24, r24
+  f8:	99 1f       	adc	r25, r25
+  fa:	88 0f       	add	r24, r24
+  fc:	99 1f       	adc	r25, r25
+  fe:	82 2b       	or	r24, r18
+ 100:	8c 93       	st	X, r24
+
+	//Compare Output Mode
+	TCCR0 &= 0xCF;
+ 102:	a3 e5       	ldi	r26, 0x53	; 83
+ 104:	b0 e0       	ldi	r27, 0x00	; 0
+ 106:	e3 e5       	ldi	r30, 0x53	; 83
+ 108:	f0 e0       	ldi	r31, 0x00	; 0
+ 10a:	80 81       	ld	r24, Z
+ 10c:	8f 7c       	andi	r24, 0xCF	; 207
+ 10e:	8c 93       	st	X, r24
+	TCCR0 |= (g_Gpt_Configuration->COMode<<COM00) ;
+ 110:	a3 e5       	ldi	r26, 0x53	; 83
+ 112:	b0 e0       	ldi	r27, 0x00	; 0
+ 114:	e3 e5       	ldi	r30, 0x53	; 83
+ 116:	f0 e0       	ldi	r31, 0x00	; 0
+ 118:	80 81       	ld	r24, Z
+ 11a:	28 2f       	mov	r18, r24
+ 11c:	e0 91 60 00 	lds	r30, 0x0060
+ 120:	f0 91 61 00 	lds	r31, 0x0061
+ 124:	81 81       	ldd	r24, Z+1	; 0x01
+ 126:	88 2f       	mov	r24, r24
+ 128:	90 e0       	ldi	r25, 0x00	; 0
+ 12a:	82 95       	swap	r24
+ 12c:	92 95       	swap	r25
+ 12e:	90 7f       	andi	r25, 0xF0	; 240
+ 130:	98 27       	eor	r25, r24
+ 132:	80 7f       	andi	r24, 0xF0	; 240
+ 134:	98 27       	eor	r25, r24
+ 136:	82 2b       	or	r24, r18
+ 138:	8c 93       	st	X, r24
+
+	//Timer/Counter Interrupt
+	TIMSK &= 0xFB;
+ 13a:	a9 e5       	ldi	r26, 0x59	; 89
+ 13c:	b0 e0       	ldi	r27, 0x00	; 0
+ 13e:	e9 e5       	ldi	r30, 0x59	; 89
+ 140:	f0 e0       	ldi	r31, 0x00	; 0
+ 142:	80 81       	ld	r24, Z
+ 144:	8b 7f       	andi	r24, 0xFB	; 251
+ 146:	8c 93       	st	X, r24
+	TIMSK |= (g_Gpt_Configuration->Int_Mode<<TOIE0) ;
+ 148:	a9 e5       	ldi	r26, 0x59	; 89
+ 14a:	b0 e0       	ldi	r27, 0x00	; 0
+ 14c:	e9 e5       	ldi	r30, 0x59	; 89
+ 14e:	f0 e0       	ldi	r31, 0x00	; 0
+ 150:	90 81       	ld	r25, Z
+ 152:	e0 91 60 00 	lds	r30, 0x0060
+ 156:	f0 91 61 00 	lds	r31, 0x0061
+ 15a:	83 81       	ldd	r24, Z+3	; 0x03
+ 15c:	89 2b       	or	r24, r25
+ 15e:	8c 93       	st	X, r24
+
+	//non PWM mode
+	TCCR0 |= (1<<FOC0) ;
+ 160:	a3 e5       	ldi	r26, 0x53	; 83
+ 162:	b0 e0       	ldi	r27, 0x00	; 0
+ 164:	e3 e5       	ldi	r30, 0x53	; 83
+ 166:	f0 e0       	ldi	r31, 0x00	; 0
+ 168:	80 81       	ld	r24, Z
+ 16a:	80 68       	ori	r24, 0x80	; 128
+ 16c:	8c 93       	st	X, r24
+}
+ 16e:	cf 91       	pop	r28
+ 170:	df 91       	pop	r29
+ 172:	08 95       	ret
+
+00000174 <TIMER0_start>:
+
+void TIMER0_start (const uint8 Gpt_Value)
+{
+ 174:	df 93       	push	r29
+ 176:	cf 93       	push	r28
+ 178:	00 d0       	rcall	.+0      	; 0x17a <TIMER0_start+0x6>
+ 17a:	0f 92       	push	r0
+ 17c:	cd b7       	in	r28, 0x3d	; 61
+ 17e:	de b7       	in	r29, 0x3e	; 62
+ 180:	89 83       	std	Y+1, r24	; 0x01
+	switch(g_Gpt_Configuration->WGMode)
+ 182:	e0 91 60 00 	lds	r30, 0x0060
+ 186:	f0 91 61 00 	lds	r31, 0x0061
+ 18a:	80 81       	ld	r24, Z
+ 18c:	28 2f       	mov	r18, r24
+ 18e:	30 e0       	ldi	r19, 0x00	; 0
+ 190:	3b 83       	std	Y+3, r19	; 0x03
+ 192:	2a 83       	std	Y+2, r18	; 0x02
+ 194:	8a 81       	ldd	r24, Y+2	; 0x02
+ 196:	9b 81       	ldd	r25, Y+3	; 0x03
+ 198:	00 97       	sbiw	r24, 0x00	; 0
+ 19a:	31 f0       	breq	.+12     	; 0x1a8 <TIMER0_start+0x34>
+ 19c:	2a 81       	ldd	r18, Y+2	; 0x02
+ 19e:	3b 81       	ldd	r19, Y+3	; 0x03
+ 1a0:	22 30       	cpi	r18, 0x02	; 2
+ 1a2:	31 05       	cpc	r19, r1
+ 1a4:	31 f0       	breq	.+12     	; 0x1b2 <TIMER0_start+0x3e>
+ 1a6:	0a c0       	rjmp	.+20     	; 0x1bc <TIMER0_start+0x48>
+	{
+	case GPT_WGMODE_NORMAL:
+		// initial value
+		TCNT0 = Gpt_Value;
+ 1a8:	e2 e5       	ldi	r30, 0x52	; 82
+ 1aa:	f0 e0       	ldi	r31, 0x00	; 0
+ 1ac:	89 81       	ldd	r24, Y+1	; 0x01
+ 1ae:	80 83       	st	Z, r24
+ 1b0:	09 c0       	rjmp	.+18     	; 0x1c4 <TIMER0_start+0x50>
+		break;
+	case GPT_WGMODE_CTC:
+		// compare value
+		OCR0 = Gpt_Value;
+ 1b2:	ec e5       	ldi	r30, 0x5C	; 92
+ 1b4:	f0 e0       	ldi	r31, 0x00	; 0
+ 1b6:	89 81       	ldd	r24, Y+1	; 0x01
+ 1b8:	80 83       	st	Z, r24
+ 1ba:	04 c0       	rjmp	.+8      	; 0x1c4 <TIMER0_start+0x50>
+		break;
+	default:
+		// initial value
+		TCNT0 = Gpt_Value;
+ 1bc:	e2 e5       	ldi	r30, 0x52	; 82
+ 1be:	f0 e0       	ldi	r31, 0x00	; 0
+ 1c0:	89 81       	ldd	r24, Y+1	; 0x01
+ 1c2:	80 83       	st	Z, r24
+		break;
+	}
+
+	//clock
+	TCCR0 &= 0xF8;
+ 1c4:	a3 e5       	ldi	r26, 0x53	; 83
+ 1c6:	b0 e0       	ldi	r27, 0x00	; 0
+ 1c8:	e3 e5       	ldi	r30, 0x53	; 83
+ 1ca:	f0 e0       	ldi	r31, 0x00	; 0
+ 1cc:	80 81       	ld	r24, Z
+ 1ce:	88 7f       	andi	r24, 0xF8	; 248
+ 1d0:	8c 93       	st	X, r24
+	TCCR0 |= (g_Gpt_Configuration->Clock<<CS00) ;
+ 1d2:	a3 e5       	ldi	r26, 0x53	; 83
+ 1d4:	b0 e0       	ldi	r27, 0x00	; 0
+ 1d6:	e3 e5       	ldi	r30, 0x53	; 83
+ 1d8:	f0 e0       	ldi	r31, 0x00	; 0
+ 1da:	90 81       	ld	r25, Z
+ 1dc:	e0 91 60 00 	lds	r30, 0x0060
+ 1e0:	f0 91 61 00 	lds	r31, 0x0061
+ 1e4:	82 81       	ldd	r24, Z+2	; 0x02
+ 1e6:	89 2b       	or	r24, r25
+ 1e8:	8c 93       	st	X, r24
+}
+ 1ea:	0f 90       	pop	r0
+ 1ec:	0f 90       	pop	r0
+ 1ee:	0f 90       	pop	r0
+ 1f0:	cf 91       	pop	r28
+ 1f2:	df 91       	pop	r29
+ 1f4:	08 95       	ret
+
+000001f6 <TIMER0_stop>:
+
+void TIMER0_stop (void)
+{
+ 1f6:	df 93       	push	r29
+ 1f8:	cf 93       	push	r28
+ 1fa:	cd b7       	in	r28, 0x3d	; 61
+ 1fc:	de b7       	in	r29, 0x3e	; 62
+	//clock = 0;
+	TCCR0 &= 0xF8;
+ 1fe:	a3 e5       	ldi	r26, 0x53	; 83
+ 200:	b0 e0       	ldi	r27, 0x00	; 0
+ 202:	e3 e5       	ldi	r30, 0x53	; 83
+ 204:	f0 e0       	ldi	r31, 0x00	; 0
+ 206:	80 81       	ld	r24, Z
+ 208:	88 7f       	andi	r24, 0xF8	; 248
+ 20a:	8c 93       	st	X, r24
+}
+ 20c:	cf 91       	pop	r28
+ 20e:	df 91       	pop	r29
+ 210:	08 95       	ret
+
+00000212 <TIMER2_init>:
+
+void TIMER2_init (void)
+{
+ 212:	df 93       	push	r29
+ 214:	cf 93       	push	r28
+ 216:	cd b7       	in	r28, 0x3d	; 61
+ 218:	de b7       	in	r29, 0x3e	; 62
+	//Waveform Generation Mode (normal or compare)
+	TCCR2 &= 0xBF;
+ 21a:	a5 e4       	ldi	r26, 0x45	; 69
+ 21c:	b0 e0       	ldi	r27, 0x00	; 0
+ 21e:	e5 e4       	ldi	r30, 0x45	; 69
+ 220:	f0 e0       	ldi	r31, 0x00	; 0
+ 222:	80 81       	ld	r24, Z
+ 224:	8f 7b       	andi	r24, 0xBF	; 191
+ 226:	8c 93       	st	X, r24
+	TCCR2 |= ((0x01 & g_Gpt_Configuration->WGMode)<<WGM20) ;
+ 228:	a5 e4       	ldi	r26, 0x45	; 69
+ 22a:	b0 e0       	ldi	r27, 0x00	; 0
+ 22c:	e5 e4       	ldi	r30, 0x45	; 69
+ 22e:	f0 e0       	ldi	r31, 0x00	; 0
+ 230:	80 81       	ld	r24, Z
+ 232:	28 2f       	mov	r18, r24
+ 234:	e0 91 60 00 	lds	r30, 0x0060
+ 238:	f0 91 61 00 	lds	r31, 0x0061
+ 23c:	80 81       	ld	r24, Z
+ 23e:	88 2f       	mov	r24, r24
+ 240:	90 e0       	ldi	r25, 0x00	; 0
+ 242:	81 70       	andi	r24, 0x01	; 1
+ 244:	90 70       	andi	r25, 0x00	; 0
+ 246:	00 24       	eor	r0, r0
+ 248:	96 95       	lsr	r25
+ 24a:	87 95       	ror	r24
+ 24c:	07 94       	ror	r0
+ 24e:	96 95       	lsr	r25
+ 250:	87 95       	ror	r24
+ 252:	07 94       	ror	r0
+ 254:	98 2f       	mov	r25, r24
+ 256:	80 2d       	mov	r24, r0
+ 258:	82 2b       	or	r24, r18
+ 25a:	8c 93       	st	X, r24
+
+	TCCR2 &= 0xF7;
+ 25c:	a5 e4       	ldi	r26, 0x45	; 69
+ 25e:	b0 e0       	ldi	r27, 0x00	; 0
+ 260:	e5 e4       	ldi	r30, 0x45	; 69
+ 262:	f0 e0       	ldi	r31, 0x00	; 0
+ 264:	80 81       	ld	r24, Z
+ 266:	87 7f       	andi	r24, 0xF7	; 247
+ 268:	8c 93       	st	X, r24
+	TCCR2 |= ((0x02 & g_Gpt_Configuration->WGMode)<<WGM21) ;
+ 26a:	a5 e4       	ldi	r26, 0x45	; 69
+ 26c:	b0 e0       	ldi	r27, 0x00	; 0
+ 26e:	e5 e4       	ldi	r30, 0x45	; 69
+ 270:	f0 e0       	ldi	r31, 0x00	; 0
+ 272:	80 81       	ld	r24, Z
+ 274:	28 2f       	mov	r18, r24
+ 276:	e0 91 60 00 	lds	r30, 0x0060
+ 27a:	f0 91 61 00 	lds	r31, 0x0061
+ 27e:	80 81       	ld	r24, Z
+ 280:	88 2f       	mov	r24, r24
+ 282:	90 e0       	ldi	r25, 0x00	; 0
+ 284:	82 70       	andi	r24, 0x02	; 2
+ 286:	90 70       	andi	r25, 0x00	; 0
+ 288:	88 0f       	add	r24, r24
+ 28a:	99 1f       	adc	r25, r25
+ 28c:	88 0f       	add	r24, r24
+ 28e:	99 1f       	adc	r25, r25
+ 290:	88 0f       	add	r24, r24
+ 292:	99 1f       	adc	r25, r25
+ 294:	82 2b       	or	r24, r18
+ 296:	8c 93       	st	X, r24
+
+	//Compare Output Mode
+	TCCR2 &= 0xCF;
+ 298:	a5 e4       	ldi	r26, 0x45	; 69
+ 29a:	b0 e0       	ldi	r27, 0x00	; 0
+ 29c:	e5 e4       	ldi	r30, 0x45	; 69
+ 29e:	f0 e0       	ldi	r31, 0x00	; 0
+ 2a0:	80 81       	ld	r24, Z
+ 2a2:	8f 7c       	andi	r24, 0xCF	; 207
+ 2a4:	8c 93       	st	X, r24
+	TCCR2 |= (g_Gpt_Configuration->COMode<<COM20) ;
+ 2a6:	a5 e4       	ldi	r26, 0x45	; 69
+ 2a8:	b0 e0       	ldi	r27, 0x00	; 0
+ 2aa:	e5 e4       	ldi	r30, 0x45	; 69
+ 2ac:	f0 e0       	ldi	r31, 0x00	; 0
+ 2ae:	80 81       	ld	r24, Z
+ 2b0:	28 2f       	mov	r18, r24
+ 2b2:	e0 91 60 00 	lds	r30, 0x0060
+ 2b6:	f0 91 61 00 	lds	r31, 0x0061
+ 2ba:	81 81       	ldd	r24, Z+1	; 0x01
+ 2bc:	88 2f       	mov	r24, r24
+ 2be:	90 e0       	ldi	r25, 0x00	; 0
+ 2c0:	82 95       	swap	r24
+ 2c2:	92 95       	swap	r25
+ 2c4:	90 7f       	andi	r25, 0xF0	; 240
+ 2c6:	98 27       	eor	r25, r24
+ 2c8:	80 7f       	andi	r24, 0xF0	; 240
+ 2ca:	98 27       	eor	r25, r24
+ 2cc:	82 2b       	or	r24, r18
+ 2ce:	8c 93       	st	X, r24
+
+	//Timer2/Counter2 Interrupt
+	TIMSK &= 0x3F;
+ 2d0:	a9 e5       	ldi	r26, 0x59	; 89
+ 2d2:	b0 e0       	ldi	r27, 0x00	; 0
+ 2d4:	e9 e5       	ldi	r30, 0x59	; 89
+ 2d6:	f0 e0       	ldi	r31, 0x00	; 0
+ 2d8:	80 81       	ld	r24, Z
+ 2da:	8f 73       	andi	r24, 0x3F	; 63
+ 2dc:	8c 93       	st	X, r24
+	TIMSK |= (g_Gpt_Configuration->Int_Mode<<TOIE2) ;
+ 2de:	a9 e5       	ldi	r26, 0x59	; 89
+ 2e0:	b0 e0       	ldi	r27, 0x00	; 0
+ 2e2:	e9 e5       	ldi	r30, 0x59	; 89
+ 2e4:	f0 e0       	ldi	r31, 0x00	; 0
+ 2e6:	80 81       	ld	r24, Z
+ 2e8:	28 2f       	mov	r18, r24
+ 2ea:	e0 91 60 00 	lds	r30, 0x0060
+ 2ee:	f0 91 61 00 	lds	r31, 0x0061
+ 2f2:	83 81       	ldd	r24, Z+3	; 0x03
+ 2f4:	88 2f       	mov	r24, r24
+ 2f6:	90 e0       	ldi	r25, 0x00	; 0
+ 2f8:	00 24       	eor	r0, r0
+ 2fa:	96 95       	lsr	r25
+ 2fc:	87 95       	ror	r24
+ 2fe:	07 94       	ror	r0
+ 300:	96 95       	lsr	r25
+ 302:	87 95       	ror	r24
+ 304:	07 94       	ror	r0
+ 306:	98 2f       	mov	r25, r24
+ 308:	80 2d       	mov	r24, r0
+ 30a:	82 2b       	or	r24, r18
+ 30c:	8c 93       	st	X, r24
+
+	//non PWM mode
+	TCCR2 |= (1<<FOC2) ;
+ 30e:	a5 e4       	ldi	r26, 0x45	; 69
+ 310:	b0 e0       	ldi	r27, 0x00	; 0
+ 312:	e5 e4       	ldi	r30, 0x45	; 69
+ 314:	f0 e0       	ldi	r31, 0x00	; 0
+ 316:	80 81       	ld	r24, Z
+ 318:	80 68       	ori	r24, 0x80	; 128
+ 31a:	8c 93       	st	X, r24
+}
+ 31c:	cf 91       	pop	r28
+ 31e:	df 91       	pop	r29
+ 320:	08 95       	ret
+
+00000322 <TIMER2_start>:
+
+void TIMER2_start (const uint8 Gpt_Value)
+{
+ 322:	df 93       	push	r29
+ 324:	cf 93       	push	r28
+ 326:	00 d0       	rcall	.+0      	; 0x328 <TIMER2_start+0x6>
+ 328:	0f 92       	push	r0
+ 32a:	cd b7       	in	r28, 0x3d	; 61
+ 32c:	de b7       	in	r29, 0x3e	; 62
+ 32e:	89 83       	std	Y+1, r24	; 0x01
+	switch(g_Gpt_Configuration->WGMode)
+ 330:	e0 91 60 00 	lds	r30, 0x0060
+ 334:	f0 91 61 00 	lds	r31, 0x0061
+ 338:	80 81       	ld	r24, Z
+ 33a:	28 2f       	mov	r18, r24
+ 33c:	30 e0       	ldi	r19, 0x00	; 0
+ 33e:	3b 83       	std	Y+3, r19	; 0x03
+ 340:	2a 83       	std	Y+2, r18	; 0x02
+ 342:	8a 81       	ldd	r24, Y+2	; 0x02
+ 344:	9b 81       	ldd	r25, Y+3	; 0x03
+ 346:	00 97       	sbiw	r24, 0x00	; 0
+ 348:	31 f0       	breq	.+12     	; 0x356 <TIMER2_start+0x34>
+ 34a:	2a 81       	ldd	r18, Y+2	; 0x02
+ 34c:	3b 81       	ldd	r19, Y+3	; 0x03
+ 34e:	22 30       	cpi	r18, 0x02	; 2
+ 350:	31 05       	cpc	r19, r1
+ 352:	31 f0       	breq	.+12     	; 0x360 <TIMER2_start+0x3e>
+ 354:	0a c0       	rjmp	.+20     	; 0x36a <TIMER2_start+0x48>
+	{
+	case GPT_WGMODE_NORMAL:
+		// initial value
+		TCNT2 = Gpt_Value;
+ 356:	e4 e4       	ldi	r30, 0x44	; 68
+ 358:	f0 e0       	ldi	r31, 0x00	; 0
+ 35a:	89 81       	ldd	r24, Y+1	; 0x01
+ 35c:	80 83       	st	Z, r24
+ 35e:	09 c0       	rjmp	.+18     	; 0x372 <TIMER2_start+0x50>
+		break;
+	case GPT_WGMODE_CTC:
+		// compare value
+		OCR2 = Gpt_Value;
+ 360:	e3 e4       	ldi	r30, 0x43	; 67
+ 362:	f0 e0       	ldi	r31, 0x00	; 0
+ 364:	89 81       	ldd	r24, Y+1	; 0x01
+ 366:	80 83       	st	Z, r24
+ 368:	04 c0       	rjmp	.+8      	; 0x372 <TIMER2_start+0x50>
+		break;
+	default:
+		// initial value
+		TCNT2 = Gpt_Value;
+ 36a:	e4 e4       	ldi	r30, 0x44	; 68
+ 36c:	f0 e0       	ldi	r31, 0x00	; 0
+ 36e:	89 81       	ldd	r24, Y+1	; 0x01
+ 370:	80 83       	st	Z, r24
+		break;
+	}
+
+	//clock
+	TCCR2 &= 0xF8;
+ 372:	a5 e4       	ldi	r26, 0x45	; 69
+ 374:	b0 e0       	ldi	r27, 0x00	; 0
+ 376:	e5 e4       	ldi	r30, 0x45	; 69
+ 378:	f0 e0       	ldi	r31, 0x00	; 0
+ 37a:	80 81       	ld	r24, Z
+ 37c:	88 7f       	andi	r24, 0xF8	; 248
+ 37e:	8c 93       	st	X, r24
+	TCCR2 |= (g_Gpt_Configuration->Clock<<CS20) ;
+ 380:	a5 e4       	ldi	r26, 0x45	; 69
+ 382:	b0 e0       	ldi	r27, 0x00	; 0
+ 384:	e5 e4       	ldi	r30, 0x45	; 69
+ 386:	f0 e0       	ldi	r31, 0x00	; 0
+ 388:	90 81       	ld	r25, Z
+ 38a:	e0 91 60 00 	lds	r30, 0x0060
+ 38e:	f0 91 61 00 	lds	r31, 0x0061
+ 392:	82 81       	ldd	r24, Z+2	; 0x02
+ 394:	89 2b       	or	r24, r25
+ 396:	8c 93       	st	X, r24
+}
+ 398:	0f 90       	pop	r0
+ 39a:	0f 90       	pop	r0
+ 39c:	0f 90       	pop	r0
+ 39e:	cf 91       	pop	r28
+ 3a0:	df 91       	pop	r29
+ 3a2:	08 95       	ret
+
+000003a4 <TIMER2_stop>:
+
+void TIMER2_stop (void)
+{
+ 3a4:	df 93       	push	r29
+ 3a6:	cf 93       	push	r28
+ 3a8:	cd b7       	in	r28, 0x3d	; 61
+ 3aa:	de b7       	in	r29, 0x3e	; 62
+	//clock = 0;
+	TCCR2 &= 0xF8;
+ 3ac:	a5 e4       	ldi	r26, 0x45	; 69
+ 3ae:	b0 e0       	ldi	r27, 0x00	; 0
+ 3b0:	e5 e4       	ldi	r30, 0x45	; 69
+ 3b2:	f0 e0       	ldi	r31, 0x00	; 0
+ 3b4:	80 81       	ld	r24, Z
+ 3b6:	88 7f       	andi	r24, 0xF8	; 248
+ 3b8:	8c 93       	st	X, r24
+}
+ 3ba:	cf 91       	pop	r28
+ 3bc:	df 91       	pop	r29
+ 3be:	08 95       	ret
+
+000003c0 <main>:
+
+#include "TIMER.h"
+
+
+int main (void)
+{
+ 3c0:	df 93       	push	r29
+ 3c2:	cf 93       	push	r28
+ 3c4:	cd b7       	in	r28, 0x3d	; 61
+ 3c6:	de b7       	in	r29, 0x3e	; 62
+ 3c8:	28 97       	sbiw	r28, 0x08	; 8
+ 3ca:	0f b6       	in	r0, 0x3f	; 63
+ 3cc:	f8 94       	cli
+ 3ce:	de bf       	out	0x3e, r29	; 62
+ 3d0:	0f be       	out	0x3f, r0	; 63
+ 3d2:	cd bf       	out	0x3d, r28	; 61
+	uint8 tick = 0;
+ 3d4:	1a 82       	std	Y+2, r1	; 0x02
+	uint8 tick2 = 0;
+ 3d6:	19 82       	std	Y+1, r1	; 0x01
+
+	Gpt_ConfigChannel GPTconfig = {GPT_WGMODE_CTC,GPT_COMODE_NORMAL,T2_F_CPU_1024,GPT_NO_INTERRUPT};
+ 3d8:	82 e0       	ldi	r24, 0x02	; 2
+ 3da:	8b 83       	std	Y+3, r24	; 0x03
+ 3dc:	1c 82       	std	Y+4, r1	; 0x04
+ 3de:	87 e0       	ldi	r24, 0x07	; 7
+ 3e0:	8d 83       	std	Y+5, r24	; 0x05
+ 3e2:	1e 82       	std	Y+6, r1	; 0x06
+
+	g_Gpt_Configuration = &GPTconfig;
+ 3e4:	ce 01       	movw	r24, r28
+ 3e6:	03 96       	adiw	r24, 0x03	; 3
+ 3e8:	90 93 61 00 	sts	0x0061, r25
+ 3ec:	80 93 60 00 	sts	0x0060, r24
+
+	TIMER2_init();
+ 3f0:	0e 94 09 01 	call	0x212	; 0x212 <TIMER2_init>
+
+	DDRD = 0xFF;
+ 3f4:	e1 e3       	ldi	r30, 0x31	; 49
+ 3f6:	f0 e0       	ldi	r31, 0x00	; 0
+ 3f8:	8f ef       	ldi	r24, 0xFF	; 255
+ 3fa:	80 83       	st	Z, r24
+	PORTD = 0x00;
+ 3fc:	e2 e3       	ldi	r30, 0x32	; 50
+ 3fe:	f0 e0       	ldi	r31, 0x00	; 0
+ 400:	10 82       	st	Z, r1
+
+	TIMER2_start(255);
+ 402:	8f ef       	ldi	r24, 0xFF	; 255
+ 404:	0e 94 91 01 	call	0x322	; 0x322 <TIMER2_start>
+
+	while(1)
+	{
+		switch(g_Gpt_Configuration->WGMode)
+ 408:	e0 91 60 00 	lds	r30, 0x0060
+ 40c:	f0 91 61 00 	lds	r31, 0x0061
+ 410:	80 81       	ld	r24, Z
+ 412:	28 2f       	mov	r18, r24
+ 414:	30 e0       	ldi	r19, 0x00	; 0
+ 416:	38 87       	std	Y+8, r19	; 0x08
+ 418:	2f 83       	std	Y+7, r18	; 0x07
+ 41a:	8f 81       	ldd	r24, Y+7	; 0x07
+ 41c:	98 85       	ldd	r25, Y+8	; 0x08
+ 41e:	00 97       	sbiw	r24, 0x00	; 0
+ 420:	31 f0       	breq	.+12     	; 0x42e <main+0x6e>
+ 422:	2f 81       	ldd	r18, Y+7	; 0x07
+ 424:	38 85       	ldd	r19, Y+8	; 0x08
+ 426:	22 30       	cpi	r18, 0x02	; 2
+ 428:	31 05       	cpc	r19, r1
+ 42a:	49 f1       	breq	.+82     	; 0x47e <__stack+0x1f>
+ 42c:	ed cf       	rjmp	.-38     	; 0x408 <main+0x48>
+		{
+		case GPT_WGMODE_NORMAL:
+			while(BIT_IS_CLEAR(TIFR,TOV2)){}
+ 42e:	e8 e5       	ldi	r30, 0x58	; 88
+ 430:	f0 e0       	ldi	r31, 0x00	; 0
+ 432:	80 81       	ld	r24, Z
+ 434:	88 2f       	mov	r24, r24
+ 436:	90 e0       	ldi	r25, 0x00	; 0
+ 438:	80 74       	andi	r24, 0x40	; 64
+ 43a:	90 70       	andi	r25, 0x00	; 0
+ 43c:	00 97       	sbiw	r24, 0x00	; 0
+ 43e:	b9 f3       	breq	.-18     	; 0x42e <main+0x6e>
+			tick++;
+ 440:	8a 81       	ldd	r24, Y+2	; 0x02
+ 442:	8f 5f       	subi	r24, 0xFF	; 255
+ 444:	8a 83       	std	Y+2, r24	; 0x02
+			if(tick == 4)
+ 446:	8a 81       	ldd	r24, Y+2	; 0x02
+ 448:	84 30       	cpi	r24, 0x04	; 4
+ 44a:	59 f4       	brne	.+22     	; 0x462 <__stack+0x3>
+			{
+				PORTD ^= 0xFF;
+ 44c:	a2 e3       	ldi	r26, 0x32	; 50
+ 44e:	b0 e0       	ldi	r27, 0x00	; 0
+ 450:	e2 e3       	ldi	r30, 0x32	; 50
+ 452:	f0 e0       	ldi	r31, 0x00	; 0
+ 454:	80 81       	ld	r24, Z
+ 456:	80 95       	com	r24
+ 458:	8c 93       	st	X, r24
+				tick2++;
+ 45a:	89 81       	ldd	r24, Y+1	; 0x01
+ 45c:	8f 5f       	subi	r24, 0xFF	; 255
+ 45e:	89 83       	std	Y+1, r24	; 0x01
+				tick = 0;
+ 460:	1a 82       	std	Y+2, r1	; 0x02
+			}
+			SET_BIT(TIFR,TOV2);
+ 462:	a8 e5       	ldi	r26, 0x58	; 88
+ 464:	b0 e0       	ldi	r27, 0x00	; 0
+ 466:	e8 e5       	ldi	r30, 0x58	; 88
+ 468:	f0 e0       	ldi	r31, 0x00	; 0
+ 46a:	80 81       	ld	r24, Z
+ 46c:	80 64       	ori	r24, 0x40	; 64
+ 46e:	8c 93       	st	X, r24
+			if(tick2 == 6)
+ 470:	89 81       	ldd	r24, Y+1	; 0x01
+ 472:	86 30       	cpi	r24, 0x06	; 6
+ 474:	49 f6       	brne	.-110    	; 0x408 <main+0x48>
+			{
+				TIMER2_stop();
+ 476:	0e 94 d2 01 	call	0x3a4	; 0x3a4 <TIMER2_stop>
+				tick2 = 0;
+ 47a:	19 82       	std	Y+1, r1	; 0x01
+ 47c:	c5 cf       	rjmp	.-118    	; 0x408 <main+0x48>
+			}
+			break;
+		case GPT_WGMODE_CTC:
+			while(BIT_IS_CLEAR(TIFR,OCF2)){}
+ 47e:	e8 e5       	ldi	r30, 0x58	; 88
+ 480:	f0 e0       	ldi	r31, 0x00	; 0
+ 482:	80 81       	ld	r24, Z
+ 484:	88 23       	and	r24, r24
+ 486:	dc f7       	brge	.-10     	; 0x47e <__stack+0x1f>
+			tick++;
+ 488:	8a 81       	ldd	r24, Y+2	; 0x02
+ 48a:	8f 5f       	subi	r24, 0xFF	; 255
+ 48c:	8a 83       	std	Y+2, r24	; 0x02
+			if(tick == 4)
+ 48e:	8a 81       	ldd	r24, Y+2	; 0x02
+ 490:	84 30       	cpi	r24, 0x04	; 4
+ 492:	59 f4       	brne	.+22     	; 0x4aa <__stack+0x4b>
+			{
+				PORTD ^= 0xFF;
+ 494:	a2 e3       	ldi	r26, 0x32	; 50
+ 496:	b0 e0       	ldi	r27, 0x00	; 0
+ 498:	e2 e3       	ldi	r30, 0x32	; 50
+ 49a:	f0 e0       	ldi	r31, 0x00	; 0
+ 49c:	80 81       	ld	r24, Z
+ 49e:	80 95       	com	r24
+ 4a0:	8c 93       	st	X, r24
+				tick2++;
+ 4a2:	89 81       	ldd	r24, Y+1	; 0x01
+ 4a4:	8f 5f       	subi	r24, 0xFF	; 255
+ 4a6:	89 83       	std	Y+1, r24	; 0x01
+				tick = 0;
+ 4a8:	1a 82       	std	Y+2, r1	; 0x02
+			}
+			SET_BIT(TIFR,OCF2);
+ 4aa:	a8 e5       	ldi	r26, 0x58	; 88
+ 4ac:	b0 e0       	ldi	r27, 0x00	; 0
+ 4ae:	e8 e5       	ldi	r30, 0x58	; 88
+ 4b0:	f0 e0       	ldi	r31, 0x00	; 0
+ 4b2:	80 81       	ld	r24, Z
+ 4b4:	80 68       	ori	r24, 0x80	; 128
+ 4b6:	8c 93       	st	X, r24
+			if(tick2 == 6)
+ 4b8:	89 81       	ldd	r24, Y+1	; 0x01
+ 4ba:	86 30       	cpi	r24, 0x06	; 6
+ 4bc:	09 f0       	breq	.+2      	; 0x4c0 <__stack+0x61>
+ 4be:	a4 cf       	rjmp	.-184    	; 0x408 <main+0x48>
+			{
+				TIMER2_stop();
+ 4c0:	0e 94 d2 01 	call	0x3a4	; 0x3a4 <TIMER2_stop>
+				tick2 = 0;
+ 4c4:	19 82       	std	Y+1, r1	; 0x01
+ 4c6:	a0 cf       	rjmp	.-192    	; 0x408 <main+0x48>
+
+000004c8 <_exit>:
+ 4c8:	f8 94       	cli
+
+000004ca <__stop_program>:
+ 4ca:	ff cf       	rjmp	.-2      	; 0x4ca <__stop_program>
